@@ -19,7 +19,7 @@ spec = Gem::Specification.new do |s|
  
   s.required_rubygems_version = ">= 1.3.5"
  
-  s.files = Dir.glob("lib/**/*") + %w(LICENSE README.markdown)
+  s.files = Dir.glob("lib/**/*") + %w(LICENSE README.rdoc)
   s.executables = []
   s.require_path = 'lib'
 end
