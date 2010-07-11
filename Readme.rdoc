@@ -1,0 +1,24 @@
+= SMS Promote Ruby Bindings
+
+This is a ruby gem that helps you sending sms using the http://smspromote.de
+service. To start follow the instructions:
+
+Save your api key in a keystore:
+
+  echo "SECRETKEYJHKSJH123123LKJ" > ~/.smspromote.key
+  
+Create a new ruby source file with the following script
+
+  require "rubygems"
+  require "smspromote"
+  
+  API_KEY = SmsPromote::Gateway.read_api_key_from_file
+  GATEWAY = SmsPromote::Gateway.new(API_KEY, :secure => true,
+                                    :originator => "MY SERVICE OR NUMBER")
+  
+  msg = SmsPromote::Message.new('001231231231', 'Hello World')
+  
+  GATEWAY.send_messsage(msg)
+  
+  p msg.delivered?
+  p msg.cost

@@ -1,3 +1,4 @@
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__), 'lib')
 require "lib/smspromote"
 
 spec = Gem::Specification.new do |s|
@@ -9,7 +10,7 @@ spec = Gem::Specification.new do |s|
   s.summary = "this gem helps sending sms using the smspromote.de sms gateway"
   s.description = ""
   
-  s.add_dependency('httparty', '>= 0.5.2')
+  s.add_dependency('rest-client', '>= 1.6.0')
   
   s.add_development_dependency('rake')
   s.add_development_dependency('rspec')
