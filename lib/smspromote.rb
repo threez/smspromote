@@ -1,13 +1,10 @@
 module SmsPromote
-  VERSION = "0.0.1"
+  VERSION = "0.0.2"
 end
 
-begin
-  require 'rest_client'
-rescue LoadError
-  require 'rubygems'
-  require 'rest_client'
-end
+gem 'rest-client', '>= 1.6.0'
+
+require 'rest_client'
 
 require 'smspromote/message'
 require 'smspromote/gateway'

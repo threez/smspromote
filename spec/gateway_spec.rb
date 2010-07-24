@@ -31,4 +31,9 @@ describe SmsPromote::Gateway do
     gateway.send_message(message)
     message.delivered?.should == true
   end
+  
+  it "should be possible to return the credits left" do
+    gateway = SmsPromote::Gateway.new API_KEY, :debug => true
+    gateway.credits.should >= 0
+  end
 end

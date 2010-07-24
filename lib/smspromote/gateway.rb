@@ -47,6 +47,12 @@ module SmsPromote
       message
     end
     
+    # returns the credits left for the gateway
+    def credits
+      url = @options[:secure] ? "https://" :  "http://"
+      RestClient.get("gateway.smspromote.de/credits/?key=#{@api_key}").to_f
+    end
+    
     # returns the response message hash based on the body data
     def parse_response(body)
       lines = body.split(/\n/)

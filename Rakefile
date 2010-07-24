@@ -1,5 +1,6 @@
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), 'lib')
-require "lib/smspromote"
+require 'rubygems'
+require 'lib/smspromote'
 
 spec = Gem::Specification.new do |s|
   s.name = "smspromote"
