@@ -18,7 +18,7 @@ Create a new ruby source file with the following script
   
   msg = SmsPromote::Message.new('001231231231', 'Hello World')
   
-  GATEWAY.send_messsage(msg)
+  GATEWAY.send_message(msg)
   
   p msg.delivered?
   p msg.cost
