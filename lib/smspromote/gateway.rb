@@ -47,9 +47,11 @@ module SmsPromote
         options[:from] = @options[:originator]
       end
       
-      url = service_url
-      url.path = "/"
-      response = Net::HTTP.post_form(url, options)
+      response = session do |http|
+        request = Net::HTTP::Post.new("/")
+        request.form_data = options
+        http.request(request)
+      end
       
       data = parse_response(response.body)
       message.after_send(data[:code], data[:message_id], data[:cost], data[:count])

@@ -27,8 +27,16 @@ describe SmsPromote::Gateway do
     data[:count].should == 1
   end
   
-  it "should be possible to send a simple message debug" do
+  it "should be possible to send a simple debug message" do
     gateway = SmsPromote::Gateway.new API_KEY, :debug => true
+    message = SmsPromote::Message.new('001231231231123', 'Hello World')
+    gateway.send_message(message)
+    message.message_id.should_not == nil
+    message.delivered?.should be_true
+  end
+  
+  it "should be possible to send a simple debug message securly" do
+    gateway = SmsPromote::Gateway.new API_KEY, :debug => true, :secure => true
     message = SmsPromote::Message.new('001231231231123', 'Hello World')
     gateway.send_message(message)
     message.message_id.should_not == nil
@@ -40,7 +48,7 @@ describe SmsPromote::Gateway do
     gateway.credits.should >= 0
   end
   
-  it "should be possible to return the credits left using secure channels" do
+  it "should be possible to return the credits left securly" do
     gateway = SmsPromote::Gateway.new API_KEY, :debug => true, :secure => true
     gateway.secure?.should be_true
     gateway.credits.should >= 0
