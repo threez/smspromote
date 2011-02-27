@@ -29,6 +29,7 @@ describe SmsPromote::Gateway do
     gateway = SmsPromote::Gateway.new API_KEY, :debug => true
     message = SmsPromote::Message.new('001231231231123', 'Hello World')
     gateway.send_message(message)
+    message.id.should_not == nil
     message.delivered?.should == true
   end
   

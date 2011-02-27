@@ -1,7 +1,10 @@
+require "net/http"
+require "uri"
+
 module SmsPromote
   class Gateway
-    SECURE = "https://gateway.smspromote.de/"
-    INSECURE = "http://gateway.smspromote.de/"
+    SECURE = "https://gateway.smspromote.de"
+    INSECURE = "http://gateway.smspromote.de"
     
     # returns the api key as string. The api key will be read 
     # from the ".smspromote.key" file from the home directroy of
@@ -42,15 +45,16 @@ module SmsPromote
         options[:from] = @options[:originator]
       end
       
-      data = parse_response(RestClient.post(service_url, options).body)
+      response = Net::HTTP.post_form(URI.parse(service_url + "/"), options)
+      data = parse_response(response.body)
       message.after_send(data[:code], data[:message_id], data[:cost], data[:count])
       message
     end
     
     # returns the credits left for the gateway
     def credits
-      url = @options[:secure] ? "https://" :  "http://"
-      RestClient.get("gateway.smspromote.de/credits/?key=#{@api_key}").to_f
+      url = URI.parse(service_url + "/credits/?key=#{@api_key}")
+      Net::HTTP.get(url).to_f
     end
     
     # returns the response message hash based on the body data
