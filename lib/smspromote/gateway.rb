@@ -1,10 +1,12 @@
 require "net/http"
+require "net/https"
 require "uri"
 
 module SmsPromote
   class Gateway
-    SECURE = "https://gateway.smspromote.de"
-    INSECURE = "http://gateway.smspromote.de"
+    DOMAIN = "gateway.smspromote.de".freeze
+    SECURE = "https://#{DOMAIN}"
+    INSECURE = "http://#{DOMAIN}"
     
     # returns the api key as string. The api key will be read 
     # from the ".smspromote.key" file from the home directroy of
@@ -45,7 +47,10 @@ module SmsPromote
         options[:from] = @options[:originator]
       end
       
-      response = Net::HTTP.post_form(URI.parse(service_url + "/"), options)
+      url = service_url
+      url.path = "/"
+      response = Net::HTTP.post_form(url, options)
+      
       data = parse_response(response.body)
       message.after_send(data[:code], data[:message_id], data[:cost], data[:count])
       message
@@ -53,8 +58,9 @@ module SmsPromote
     
     # returns the credits left for the gateway
     def credits
-      url = URI.parse(service_url + "/credits/?key=#{@api_key}")
-      Net::HTTP.get(url).to_f
+      session do |http|
+        http.get("/credits/?key=#{@api_key}").body.to_f
+      end
     end
     
     # returns the response message hash based on the body data
@@ -72,15 +78,36 @@ module SmsPromote
     def debug?
       !!@options[:debug]
     end
+    
+    # returns true if the service should use https
+    def secure?
+      !!@options[:secure]
+    end
+    
+    # returns true if the messages should contain an orginator
+    def originator?
+      !!@options[:originator]
+    end
 
     # returns either basic or gold
     def route
-      @options[:originator] ? :gold : :basic
+      originator? ? :gold : :basic
     end
   
     # returns the service url based on the security options
     def service_url
-      @options[:secure] ? SECURE : INSECURE
+      URI.parse(secure? ? SECURE : INSECURE)
+    end
+    
+  private
+    
+    def session # :yield: http
+      http = Net::HTTP.new(service_url.host, service_url.port)
+      if secure?
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+      end
+      yield(http)
     end
   end
 end
