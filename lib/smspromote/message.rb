@@ -32,6 +32,17 @@ module SmsPromote
       @code == 100
     end
     
+    # encode the the content of the body according to the interface spec
+    def encode!(from = "UTF-8", to = "ISO-8859-1")
+      # ruby 1.9 and higher
+      if "".respond_to?(:encode) && "".respond_to?(:force_encoding)
+        @body = @body.force_encoding(from).encode(to)
+      else # ruby 1.8
+        require "iconv"
+        @body = Iconv.iconv(to, from, @body).first
+      end
+    end
+    
     # sets the message information after the message has been send
     # code:: [Fixnum] the message code (e.g. 100)
     # message_id:: [String] the message id string 

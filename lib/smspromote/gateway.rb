@@ -49,7 +49,7 @@ module SmsPromote
       
       response = session do |http|
         request = Net::HTTP::Post.new("/")
-        request.form_data = options
+        request.body = Gateway.encode_params(options)
         http.request(request)
       end
       
@@ -99,6 +99,15 @@ module SmsPromote
     # returns the service url based on the security options
     def service_url
       URI.parse(secure? ? SECURE : INSECURE)
+    end
+    
+    # returns the encoded params str based on the passed hash
+    def self.encode_params(params = {})
+      data = []
+      params.each do |key, value|
+        data << "#{key}=#{URI.escape(value.to_s)}"
+      end
+      data.join("&")
     end
     
   private
