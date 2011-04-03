@@ -1,6 +1,6 @@
 $LOAD_PATH.unshift File.join(File.dirname(__FILE__), 'lib')
-require 'rubygems'
-require 'lib/smspromote'
+require 'smspromote'
+require "rubygems" unless defined? Gem
 
 spec = Gem::Specification.new do |s|
   s.name = "smspromote"
@@ -24,17 +24,15 @@ spec = Gem::Specification.new do |s|
 end
  
 begin
-  require 'spec/rake/spectask'
+  require 'rspec/core/rake_task'
 rescue LoadError
   task :spec do
     $stderr.puts '`gem install rspec` to run specs'
   end
 else
   desc "Run specs"
-  Spec::Rake::SpecTask.new do |t|
-    t.spec_files = FileList['spec/**/*_spec.rb']
-    t.spec_opts = %w(-fs --color)
-    t.warning = false
+  RSpec::Core::RakeTask.new(:spec) do |t|
+    t.rspec_opts = %w(-fs --color)
   end
 end
  
