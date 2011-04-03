@@ -14,4 +14,10 @@ describe SmsPromote::Message do
     message = SmsPromote::Message.new('004917011122233', 'Hello World' * 50)
     message.multipart?.should == true
   end
+  
+  it "should be possible to encode the message correctly" do
+    message = SmsPromote::Message.new('004917011122233', txt_file("utf-8"))
+    message.encode!
+    message.body.should == txt_file("iso-8859-1")
+  end
 end

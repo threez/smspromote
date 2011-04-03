@@ -53,4 +53,11 @@ describe SmsPromote::Gateway do
     gateway.secure?.should be_true
     gateway.credits.should >= 0
   end
+  
+  it "should encode the params according to the gateway spec" do
+    SmsPromote::Gateway.encode_params(
+      :message => txt_file("iso-8859-1")
+    ).should == "message=a%20-%20%E4%0Ao%20-%20%F6%0Au" \
+      "%20-%20%FC%0AA%20-%20%C4%0AO%20-%20%D6%0AU%20-%20%DC%0As%20-%20%DF"
+  end
 end
